@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 
 from config import Config
 from app import app, im, colour_maps
+from app.forms import SubmissionForm
 
 
 @app.errorhandler(413)
@@ -29,35 +30,24 @@ def index():
     return render_template("index.html", title="Scientific web apps")
 
 
-@app.route("/pim", methods=["GET"])
-@app.route("/pim.html", methods=["GET"])
+@app.route("/pim", methods=["GET", "POST"])
+@app.route("/pim.html", methods=["GET", "POST"])
 def pim():
-    individual_cmaps = {}
-    for cmap in colour_maps.cmap_list:
-        single_cmap_B64 = colour_maps.plot_single_color_gradient(cmap)
-        individual_cmaps[cmap] = single_cmap_B64
-    return render_template(
-        "pim.html",
-        title="Percent Identity Matrix Generator",
-        cmap_list=colour_maps.cmap_list,
-        individual_cmaps=individual_cmaps,
-    )
+    form = SubmissionForm()
+    cmaps = []
+    for cmap_name in colour_maps.cmap_list:
+        cmap = colour_maps.plot_single_color_gradient(cmap_name)
+        cmaps.append(cmap)
 
+    if form.validate_on_submit():
+        selected_cmap = form.colour_map.data
 
-@app.route("/pim", methods=["POST"])
-def upload_pim_file():
-    uploaded_file = request.files["text_data_file"]
-    selected_cmap = request.form["selected_cmap"]
-    if uploaded_file:
-        mimetype = uploaded_file.content_type
+        mimetype = form.file.data.content_type
         if mimetype == "text/plain":
-            complete_filename = secure_filename(uploaded_file.filename)
-            uploaded_file.save(
-                os.path.join(app.config["UPLOAD_PATH"], complete_filename)
-            )
-            pngImageB64String, filename = im.generate_matrix(
-                complete_filename, selected_cmap
-            )
+            filename = secure_filename(form.file.data.filename)
+            form.file.data.save("uploads/" + filename)
+            pngImageB64String, filename = im.generate_matrix(filename, selected_cmap)
+
             return render_template(
                 "pim_result.html",
                 title="Resulting Percent Identity Matrix",
@@ -65,10 +55,16 @@ def upload_pim_file():
                 filename=filename,
                 selected_cmap=selected_cmap,
             )
+
         else:
             abort(400)
-    else:
-        return redirect(url_for("index"))
+
+    return render_template(
+        "pim.html",
+        title="Percent Identity Matrix Generator",
+        form=form,
+        cmaps=cmaps,
+    )
 
 
 @app.route("/colour_maps", methods=["GET"])
