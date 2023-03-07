@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set active_page = "pim" %}
+
+{% block content %}
+<h1>Resulting identity matrix</h1>
+<div class="container">
+  Save chart as <a href="{{ url_for('static', filename='results/'+filename+'.pdf') }}" target="_blank">PDF</a> | <a href="{{ url_for('static', filename='results/'+filename+'.png') }}" target="_blank">PNG</a> | <a href="{{ url_for('static', filename='results/'+filename+'.svg') }}" target="_blank">SVG</a>
+</div>
+<div class="container">
+  <a
+    href="{{ url_for('static', filename='results/'+filename+'.png') }}"
+    target="_blank"
+    ><img src="{{ png_image }}" alt="Identity matrix - PNG format"
+  /></a>
+</div>
+
+
+{% endblock %}

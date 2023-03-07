@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set active_page = "pim" %}
+
+{% block content %}
+<h1>Percent Identity Matrix Generator</h1>
+
+<form method="POST" action="" enctype="multipart/form-data">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-8">
+        <label for="text_data_file" class="form-label">
+          Choose the file containing the percent identity matrix data:
+        </label>
+        <input class="form-control" type="file" name="text_data_file">      
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <label for="selected_cmap" class="form-label">
+        Choose a colour map:
+      </label>
+    </div>
+    <div class="row">
+      {% for cmap, single_cmap_B64 in individual_cmaps.items() %}
+      <div class="col-2">
+        {% if cmap == "Greys" %}
+          <input class="form-check-input" type="radio" name="selected_cmap" id="{{ cmap }}" value="{{ cmap }}" checked>
+        {% else %}
+          <input class="form-check-input" type="radio" name="selected_cmap" id="{{ cmap }}" value="{{ cmap }}">
+        {% endif %}
+        <label class="form-check-label" for="{{ cmap }}">
+          {{ cmap }}
+        </label>
+      </div>
+      <div class="col-4">
+        <img src="{{ single_cmap_B64 }}">
+      </div>
+      <div class="col-6"></div>
+      {% endfor %}
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-2">
+        <input type="submit" class="btn btn-primary">
+      </div>
+    </div>
+
+  </div>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,10 @@
+.flaskenv
+config.py
+
+__pycache__
+results/
+uploads/
+
+test*
+
+forms.py

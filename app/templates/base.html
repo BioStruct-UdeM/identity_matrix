@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="title" content="Percent identity matrix generator" />
+    <meta
+      name="keywords"
+      content="PIM, percent identity matrix, matplotlib, chart"
+    />
+    <meta name="author" content="Normand Cyr" />
+    <meta
+      name="description"
+      content="A percent identity matrix chart generator"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/custom_styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+
+    {% if title %}
+      <title>{{ title }}</title>
+    {% else %}
+      <title>Scientific web apps</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <div class="container">
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+          <span class="fs-4">Scientific web apps</span>
+        </a>
+        {% set navigation_bar = [('/', 'index', 'Home'), ('/pim', 'pim', 'Percent Identity Matrix'), ('#', 'about', 'About')] -%}
+        {% set active_page = active_page|default('index') -%}
+        <ul id="navigation" class="nav nav-pills">
+          {% for href, id, caption in navigation_bar %}
+            <li class="nav-item"><a {% if id == active_page %} class="nav-link active"{% else %}class="nav-link"{% endif %} href="{{ href|e }}">{{ caption|e }}</a></li>
+          {% endfor %}
+        </ul>
+      </header>
+    </div>
+
+    <main>
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </body>
+</html>
+<!-- {% if id == active_page %} class="active" {% endif %} -->

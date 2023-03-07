@@ -1,0 +1,8 @@
+import secrets
+
+
+class Config(object):
+    SECRET_KEY = secrets.token_bytes(32)
+    MAX_CONTENT_LENGTH = 1024 * 1024
+    UPLOAD_EXTENSIONS = [".pim", ".txt", ".fasta", ""]
+    UPLOAD_PATH = "uploads"
