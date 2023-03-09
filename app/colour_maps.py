@@ -54,10 +54,7 @@ def plot_color_gradients():
     for ax in axs:
         ax.set_axis_off()
 
-    pngImage = BytesIO()
-    fig.savefig(pngImage, format="png")
-    colour_map_B64 = "data:image/png;base64,"
-    colour_map_B64 += base64.b64encode(pngImage.getvalue()).decode("utf8")
+    colour_map_B64 = save_B64_cmap(fig)
 
     return colour_map_B64
 
@@ -66,13 +63,30 @@ def plot_single_color_gradient(cmap_name):
     fig = Figure(figsize=[4, 0.25], dpi=None, frameon=False)
     ax = fig.subplots(1, 1)
     fig.subplots_adjust(top=1 - 0.125, bottom=0.125, left=0, right=1)
-
     ax.imshow(gradient, aspect="auto", cmap=mpl.colormaps[cmap_name])
     ax.set_axis_off()
 
+    return fig
+
+
+def save_B64_cmap(fig):
     pngImage = BytesIO()
     fig.savefig(pngImage, format="png")
-    single_cmap_B64 = "data:image/png;base64,"
-    single_cmap_B64 += base64.b64encode(pngImage.getvalue()).decode("utf8")
+    colour_map_B64 = "data:image/png;base64,"
+    colour_map_B64 += base64.b64encode(pngImage.getvalue()).decode("utf8")
 
-    return single_cmap_B64
+    return colour_map_B64
+
+
+def save_cmap(cmap_name):
+    fig = Figure(figsize=[4, 0.25], dpi=None, frameon=False)
+    ax = fig.subplots(1, 1)
+    fig.subplots_adjust(top=1 - 0.125, bottom=0.125, left=0, right=1)
+
+    try:
+        ax.imshow(gradient, aspect="auto", cmap=mpl.colormaps[cmap_name])
+        ax.set_axis_off()
+        fig.savefig(f"app/static/{cmap_name}.png", format="png")
+        return "Colour map saved to disk."
+    except KeyError:
+        return "Not a known colour map name. See https://matplotlib.org/stable/tutorials/colors/colormaps.html."

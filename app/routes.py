@@ -2,10 +2,7 @@ import os
 
 from flask import (
     render_template,
-    request,
     abort,
-    redirect,
-    url_for,
 )
 from werkzeug.utils import secure_filename
 
@@ -20,7 +17,7 @@ def too_large(e):
 
 
 @app.errorhandler(400)
-def too_large(e):
+def invalid_mime(e):
     return "Invalid MIME type", 400
 
 
@@ -36,28 +33,23 @@ def pim():
     form = SubmissionForm()
     cmaps = []
     for cmap_name in colour_maps.cmap_list:
-        cmap = colour_maps.plot_single_color_gradient(cmap_name)
+        fig = colour_maps.plot_single_color_gradient(cmap_name)
+        cmap = colour_maps.save_B64_cmap(fig)
         cmaps.append(cmap)
 
     if form.validate_on_submit():
         selected_cmap = form.colour_map.data
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save("uploads/" + filename)
+        pngImageB64String, filename = im.generate_matrix(filename, selected_cmap)
 
-        mimetype = form.file.data.content_type
-        if mimetype == "text/plain":
-            filename = secure_filename(form.file.data.filename)
-            form.file.data.save("uploads/" + filename)
-            pngImageB64String, filename = im.generate_matrix(filename, selected_cmap)
-
-            return render_template(
-                "pim_result.html",
-                title="Resulting Percent Identity Matrix",
-                png_image=pngImageB64String,
-                filename=filename,
-                selected_cmap=selected_cmap,
-            )
-
-        else:
-            abort(400)
+        return render_template(
+            "pim_result.html",
+            title="Resulting Percent Identity Matrix",
+            png_image=pngImageB64String,
+            filename=filename,
+            selected_cmap=selected_cmap,
+        )
 
     return render_template(
         "pim.html",
