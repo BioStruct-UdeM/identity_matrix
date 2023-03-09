@@ -1,44 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
   <head>
-    <meta charset="utf-8" />
-    <meta name="title" content="Percent identity matrix generator" />
-    <meta
-      name="keywords"
-      content="PIM, percent identity matrix, matplotlib, chart"
-    />
-    <meta name="author" content="Normand Cyr" />
-    <meta
-      name="description"
-      content="A percent identity matrix chart generator"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{{ url_for('static', filename='css/custom_styles.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-    />
-
-    {% if title %}
-      <title>{{ title }}</title>
+    {% include "head.html" %} {% if title %}
+    <title>{{ title }}</title>
     {% else %}
-      <title>Scientific web apps</title>
+    <title>Scientific web apps</title>
     {% endif %}
   </head>
 
-  <body>
+  <body class="d-flex flex-column h-100">
     <div class="container">
       <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
           <span class="fs-4">Scientific web apps</span>
         </a>
-        {% set navigation_bar = [('/', 'index', 'Home'), ('/pim', 'pim', 'Percent Identity Matrix'), ('#', 'about', 'About')] -%}
+        {% set navigation_bar = [('/', 'index', 'Home'), ('/pim', 'pim', 'Percent Identity Matrix')] -%}
         {% set active_page = active_page|default('index') -%}
         <ul id="navigation" class="nav nav-pills">
           {% for href, id, caption in navigation_bar %}
@@ -48,11 +24,9 @@
       </header>
     </div>
 
-    <main>
-      <div class="container">
-        {% block content %}{% endblock %}
-      </div>
+    <main class="flex-shrink-0">
+      <div class="container">{% block content %}{% endblock %}</div>
     </main>
+    {% extends "footer.html" %}
   </body>
 </html>
-<!-- {% if id == active_page %} class="active" {% endif %} -->
