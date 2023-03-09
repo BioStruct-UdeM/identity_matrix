@@ -26,7 +26,7 @@
         {{ colour_map_name(class_="form-check-input") }} {{ colour_map_name.label }}
       </div>
       <div class="col-4">
-        <img src="{{ url_for('static', filename='images/'+colour_map_name.label.text+'.png') }}">
+        <img class="img-responsive" src="{{ url_for('static', filename='images/'+colour_map_name.label.text+'.png') }}">
       </div>
       <div class="col-6"></div>
       {% endfor %}
